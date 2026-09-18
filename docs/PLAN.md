@@ -1,5 +1,26 @@
 # pi-jev-compaction - Build Plan
 
+> **Status: shipped as v0.1.0**, 2026-09-18. All six phases are done, the repository is
+> public at [vava-nessa/pi-jev-compaction](https://github.com/vava-nessa/pi-jev-compaction)
+> and installed in Pi. Three things changed while building it, each for a reason found in a
+> real session, and each is recorded in the sections below:
+>
+> 1. `preserveRecentMessages` defaults to **1**, not 6 (section 3.2). Pi already keeps the
+>    newest context through `compaction.keepRecentTokens`; pinning six more messages of the
+>    span made the extension a no-op on short sessions. Observed live: a 6-message span, all
+>    pinned, fallback to the built-in summary.
+> 2. Support modules live in `extensions/lib/` (section 3). Pi loads every top-level `.ts`
+>    file of an `extensions/` directory as an extension, so `config.ts` and
+>    `pi-messages.ts` were rejected with "does not export a valid factory function" the
+>    moment the package was installed.
+> 3. Pi's threshold trigger usually fires **mid-turn**, right after a tool batch. At that
+>    moment the span is the current working set, Jev keeps almost all of it, and the
+>    extension falls back (observed: 6% smaller). That is the designed behaviour, not a
+>    bug, and it is why the reduction gate matters more than the pruning itself.
+>
+> Measured results, the failed hypotheses and the fallback paths are in
+> [.changelog/CHANGELOG_0.1.0.md](../.changelog/CHANGELOG_0.1.0.md).
+
 Port of [tamaratran/fast-jev-compaction](https://github.com/tamaratran/fast-jev-compaction)
 (Claude Code plugin + npm library) to **Pi**.
 
