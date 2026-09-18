@@ -34,7 +34,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { DEFAULT_MODEL, SYSTEM_ONE_URL } from "../src/index.ts";
+import { DEFAULT_MODEL, SYSTEM_ONE_URL } from "../../src/index.ts";
 
 export interface JevConfig {
   /** Master switch. When false the extension never touches compaction. */

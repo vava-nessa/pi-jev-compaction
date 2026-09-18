@@ -17,8 +17,8 @@ import {
   selectSpan,
   type BuildCompactionInput,
 } from '../extensions/jev-compaction.ts';
-import { defaultConfig, type JevConfig } from '../extensions/config.ts';
-import { buildSpan, type SpanEntry } from '../extensions/pi-messages.ts';
+import { defaultConfig, type JevConfig } from '../extensions/lib/config.ts';
+import { buildSpan, type SpanEntry } from '../extensions/lib/pi-messages.ts';
 import { collectToolCalls, fitState } from '../src/index.ts';
 
 const USAGE = {

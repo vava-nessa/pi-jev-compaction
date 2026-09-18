@@ -57,7 +57,7 @@ import type {
   ToolCall as PiToolCall,
   ToolResultMessage,
 } from "@earendil-works/pi-ai";
-import { type CallDecision, type Message as EngineMessage, type ToolCall } from "../src/index.ts";
+import { type CallDecision, type Message as EngineMessage, type ToolCall } from "../../src/index.ts";
 
 /** One branch entry selected for replacement, already reduced to what we need. */
 export interface SpanEntry {

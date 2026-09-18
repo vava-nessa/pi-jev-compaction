@@ -7,12 +7,18 @@ decisions and the evidence behind them (live spikes, measured numbers) are in
 ## Two layers
 
 ```
-extensions/jev-compaction.ts   the Pi adapter: events, config, decisions, reporting
-extensions/pi-messages.ts      Pi messages <-> engine messages, and the renderer
-extensions/config.ts           configuration file, validation, key resolution
+extensions/jev-compaction.ts   the Pi adapter: events, decisions, reporting (entry point)
+extensions/lib/pi-messages.ts  Pi messages <-> engine messages, and the renderer
+extensions/lib/config.ts       configuration file, validation, key resolution
 src/                           the host-agnostic engine (session-in, session-out)
 tests/                         engine conformance + adapter and pipeline tests
 ```
+
+Support modules live in `extensions/lib/` because Pi loads every top-level `.ts` file of
+an `extensions/` directory as an extension: a helper next to the entry point is treated as
+one and rejected for not exporting a factory. Subdirectories are only picked up when they
+hold an `index.ts` or their own `package.json`, and the package manifest still names the
+single entry point explicitly, so the layout does not depend on that rule alone.
 
 `src/` never imports anything from Pi. That is why the upstream engine suite passes here
 with only its import path edited, and why the adapter is the only place that knows about

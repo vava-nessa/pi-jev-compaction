@@ -26,7 +26,7 @@
  * - `session_compact` / `session_compact_failed` only report outcomes to the user.
  *
  * CONFIGURATION
- * `~/.pi/agent/jev-compaction.json` (see extensions/config.ts), key from the file or
+ * `~/.pi/agent/jev-compaction.json` (see extensions/lib/config.ts), key from the file or
  * `TYPESAFE_API_KEY`. `/jev status` prints the effective configuration and last result.
  *
  * @functions
@@ -41,7 +41,7 @@
  * @exports default (ExtensionAPI factory), buildCompaction, selectSpan, RunStats,
  * CompactionAttempt, JevDetails
  *
- * @see extensions/pi-messages.ts, extensions/config.ts, docs/PLAN.md
+ * @see extensions/lib/pi-messages.ts, extensions/lib/config.ts, docs/PLAN.md
  */
 
 import type {
@@ -74,7 +74,7 @@ import {
   renderSpan,
   type Span,
   type SpanEntry,
-} from "./pi-messages.ts";
+} from "./lib/pi-messages.ts";
 import {
   describeConfig,
   getConfigPath,
@@ -82,7 +82,7 @@ import {
   loadConfig,
   resolveApiKey,
   type JevConfig,
-} from "./config.ts";
+} from "./lib/config.ts";
 /** Bump when the shape of `details.jev` changes, so old entries stay readable. */
 const DETAILS_VERSION = 1;
 

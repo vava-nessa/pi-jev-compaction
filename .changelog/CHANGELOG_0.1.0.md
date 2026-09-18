@@ -5,15 +5,16 @@ First release. Verbatim, Jev-guided context compaction for Pi, ported from
 
 ## Added
 
-- **Pi extension** (`extensions/jev-compaction.ts`) hooking `session_before_compact`:
+- **Pi extension** (`extensions/jev-compaction.ts`, the only entry point) hooking
+  `session_before_compact`:
   every compaction Pi would have summarized is instead scored by Jev, and the replacement
   text is the surviving history verbatim.
-- **Pi message bridging** (`extensions/pi-messages.ts`): maps Pi's `AgentMessage` union
+- **Pi message bridging** (`extensions/lib/pi-messages.ts`): maps Pi's `AgentMessage` union
   (user / assistant with text + thinking + toolCall blocks / separate toolResult messages /
   bashExecution / custom / branchSummary / compactionSummary) onto the engine's message
   model, and renders the survivors back to text in Pi's own
   `[User]: / [Assistant tool calls]: / [Tool result]` format.
-- **Configuration** (`extensions/config.ts`): `~/.pi/agent/jev-compaction.json`, validated
+- **Configuration** (`extensions/lib/config.ts`): `~/.pi/agent/jev-compaction.json`, validated
   field by field, with warnings instead of exceptions. Unknown options and wrong types are
   reported by `/jev status` and ignored.
 - **Commands**: `/jev` (status), `/jev on|off|reload|reset`, `/jev-compact [instructions]`.
@@ -47,6 +48,13 @@ First release. Verbatim, Jev-guided context compaction for Pi, ported from
 - `types/claude-code.d.ts` (11k lines of generated Claude Code declarations).
 - `demo/JevDemo` (SwiftUI animation).
 - `tsconfig.hooks.json`, replaced by `tsconfig.extension.json`.
+
+## Fixed before release
+
+- Pi loads every top-level `.ts` file of an `extensions/` directory as an extension, so the
+  support modules moved to `extensions/lib/` and the `pi` manifest names the single entry
+  point. Before that, installing the package made Pi reject `config.ts` and
+  `pi-messages.ts` with "does not export a valid factory function".
 
 ## Verified
 

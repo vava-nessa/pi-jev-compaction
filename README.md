@@ -45,10 +45,11 @@ pi install git:github.com/vava-nessa/pi-jev-compaction
 export TYPESAFE_API_KEY="<your TypeSafe key>"
 ```
 
-Or try it in a single run without installing:
+Or try it in a single run without installing (point at the extension file: `-e` loads a
+single module, and a directory path is not a module):
 
 ```sh
-TYPESAFE_API_KEY="<key>" pi -e /path/to/pi-jev-compaction/extensions
+TYPESAFE_API_KEY="<key>" pi -e /path/to/pi-jev-compaction/extensions/jev-compaction.ts
 ```
 
 Then compact as usual: `/compact`, or let Pi's own context threshold trigger it. The
@@ -227,13 +228,21 @@ npm run demo        # live network check (needs TYPESAFE_API_KEY)
 To run the working tree inside Pi without installing:
 
 ```sh
-pi -e "$PWD/extensions"
+pi -e "$PWD/extensions/jev-compaction.ts"
 ```
 
-Layout: `src/` engine, `extensions/pi-messages.ts` mapping and renderer,
-`extensions/config.ts` configuration, `extensions/jev-compaction.ts` the Pi adapter,
-`tests/engine.test.ts` the upstream engine suite, plus adapter tests. Architecture notes,
-the porting decisions and the pitfalls each one avoids are in [docs/PLAN.md](docs/PLAN.md).
+Layout: `src/` engine, `extensions/jev-compaction.ts` the Pi adapter (the only extension
+entry point), `extensions/lib/pi-messages.ts` mapping and renderer, `extensions/lib/config.ts`
+configuration, `tests/engine.test.ts` the upstream engine suite, plus adapter tests.
+
+Everything that is not an extension lives in `extensions/lib/`, and that is not cosmetic:
+Pi loads every top-level `.ts` file of `extensions/` as an extension, so a support module
+sitting next to the entry point is loaded as one too and fails with "does not export a
+valid factory function". Subdirectories are only loaded when they contain an `index.ts` or
+their own `package.json`, and the package manifest names the single entry point explicitly.
+
+Architecture notes, the porting decisions and the pitfalls each one avoids are in
+[docs/PLAN.md](docs/PLAN.md) and [docs/architecture.md](docs/architecture.md).
 
 ## Origin, scope and limitations
 

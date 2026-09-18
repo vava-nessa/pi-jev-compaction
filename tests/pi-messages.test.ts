@@ -17,7 +17,7 @@ import {
   textOfContent,
   truncatedResultText,
   type SpanEntry,
-} from '../extensions/pi-messages.ts';
+} from '../extensions/lib/pi-messages.ts';
 import { collectToolCalls, decideCall, type ToolCall } from '../src/index.ts';
 
 const USAGE = {
