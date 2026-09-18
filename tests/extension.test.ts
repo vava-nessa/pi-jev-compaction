@@ -17,7 +17,13 @@ import {
   selectSpan,
   type BuildCompactionInput,
 } from '../extensions/jev-compaction.ts';
-import { defaultConfig, type JevConfig } from '../extensions/lib/config.ts';
+import {
+  defaultConfig,
+  describeConfig,
+  fingerprintApiKey,
+  resolveApiKey,
+  type JevConfig,
+} from '../extensions/lib/config.ts';
 import { buildSpan, type SpanEntry } from '../extensions/lib/pi-messages.ts';
 import { collectToolCalls, fitState } from '../src/index.ts';
 
@@ -474,5 +480,37 @@ describe('buildCompaction', () => {
       // from the state Jev sees.
       expect(attempt.summary).not.toContain('PRIVATE REASONING');
     }
+  });
+});
+
+describe('key reporting', () => {
+  // The fingerprint exists so a request that lands in an unexpected TypeSafe account can be
+  // traced back to the key that sent it, without printing the key itself.
+  it('fingerprints without revealing the key', () => {
+    const key = 'apikey_263d61022a923e64230ba9b93752836e5ad_82462d341b974f07f41cb2fdef859c5fe77811ef710683cadf68485fd6decd4b';
+    const print = fingerprintApiKey(key);
+    expect(print).toBe('apikey_263d61...cd4b');
+    expect(key).not.toContain('...');
+    expect(print.length).toBeLessThan(25);
+  });
+
+  it('never prints a short key', () => {
+    expect(fingerprintApiKey('shortkey')).toBe('shor...');
+    expect(fingerprintApiKey('')).toBe('MISSING');
+  });
+
+  it('tells two keys apart in the status report', () => {
+    const one = describeConfig(defaultConfig(), 'apikey_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_11111111111111111111111111111111');
+    const two = describeConfig(defaultConfig(), 'apikey_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_22222222222222222222222222222222');
+    expect(one).not.toBe(two);
+    expect(describeConfig(defaultConfig(), '')).toContain('key=MISSING');
+  });
+
+  it('does not send the fingerprint to Jev', () => {
+    // Only the raw key travels, in the Authorization header.
+    const key = 'apikey_test_9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f';
+    const resolved = resolveApiKey(defaultConfig(), { TYPESAFE_API_KEY: key } as NodeJS.ProcessEnv);
+    expect(resolved).toBe(key);
+    expect(resolved).not.toContain('...');
   });
 });

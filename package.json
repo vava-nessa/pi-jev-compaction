@@ -1,6 +1,6 @@
 {
   "name": "pi-jev-compaction",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Verbatim, Jev-guided context compaction for Pi: drop stale tool calls and outputs, never summarize.",
   "type": "module",
   "license": "MIT",

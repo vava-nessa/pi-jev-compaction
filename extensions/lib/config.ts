@@ -273,11 +273,21 @@ export function resolveApiKey(config: JevConfig, env: NodeJS.ProcessEnv = proces
   return (env["TYPESAFE_API_KEY"] ?? "").trim();
 }
 
-/** One-line summary for `/jev status`. The key is reduced to a boolean. */
+/**
+ * Identifies a key without revealing it: enough to tell two keys apart when a request lands in
+ * an account you did not expect, which is the one question `key=set` cannot answer.
+ */
+export function fingerprintApiKey(apiKey: string): string {
+  if (apiKey.length === 0) return "MISSING";
+  if (apiKey.length <= 20) return `${apiKey.slice(0, 4)}...`;
+  return `${apiKey.slice(0, 13)}...${apiKey.slice(-4)}`;
+}
+
+/** One-line summary for `/jev status`. The key is reduced to a fingerprint. */
 export function describeConfig(config: JevConfig, apiKey: string): string {
   return [
     `enabled=${config.enabled}`,
-    `key=${apiKey.length > 0 ? "set" : "MISSING"}`,
+    `key=${apiKey.length > 0 ? fingerprintApiKey(apiKey) : "MISSING"}`,
     `model=${config.model}`,
     `threshold=${config.keepThreshold}`,
     `keepRecent=${config.preserveRecentMessages}`,

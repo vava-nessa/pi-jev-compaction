@@ -17,12 +17,12 @@ In any Pi session:
 /jev
 ```
 
-You should see a block like this. The three things that matter are `on`, `key=set` and the
-config line:
+You should see a block like this. The three things that matter are `on`, the key fingerprint
+and the config line:
 
 ```
 pi-jev-compaction v1 - on
-config: enabled=true key=set model=jev-latest threshold=0.5 keepRecent=1 state=25000 ...
+config: enabled=true key=apikey_263d61...cd4b model=jev-latest threshold=0.5 keepRecent=1 ...
 config file: /Users/you/.pi/agent/jev-compaction.json (absent, defaults in use)
 last: no compaction yet
 totals: 0 Jev compaction(s), 0 fallback(s), 0 failed, 0 calls + 0 results dropped, 0 chars saved
@@ -31,6 +31,13 @@ totals: 0 Jev compaction(s), 0 fallback(s), 0 failed, 0 calls + 0 results droppe
 If it says `key=MISSING`, the extension is inert and Pi will keep using its own summary:
 export `TYPESAFE_API_KEY` in the shell that starts Pi, or put the key in
 `~/.pi/agent/jev-compaction.json` as `"apiKey": "..."` (then `chmod 600` that file).
+
+Compare that fingerprint with the last characters of the key in
+[console.typesafe.ai](https://console.typesafe.ai/usage). It is the fastest way to tell two
+keys apart, and the only way to notice that requests are being billed to an account you did
+not expect: TypeSafe bills **input only**, at $0.042 per million tokens with output free, so
+a day of normal use often leaves the console balance looking untouched. A compaction of a
+196-tool-call session costs about a third of a cent.
 
 ## Level 1 - the real thing (3 minutes)
 
@@ -132,7 +139,7 @@ tail -f ~/.pi/agent/jev-compaction.log
 Log lines look like this, and the last one is the outcome:
 
 ```
-session start; enabled=true key=set model=jev-latest ... debug=true
+session start; enabled=true key=apikey_263d61...cd4b model=jev-latest ... debug=true
 compact requested (manual); entries=13 boundary=76ffc21b tokensBefore=19645
 compacted: 4 calls, 3 dropped, 0 truncated, 97% smaller, state 678 (full) in 1 request(s), 625ms
 ```
