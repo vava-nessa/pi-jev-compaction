@@ -32,6 +32,7 @@ Measured on the validation session described in [docs/PLAN.md](docs/PLAN.md):
 - [What is preserved, what can disappear](#what-is-preserved-what-can-disappear)
 - [Library usage](#library-usage)
 - [Development](#development)
+- [Testing it by hand](#testing-it-by-hand)
 - [Origin, scope and limitations](#origin-scope-and-limitations)
 
 ---
@@ -223,6 +224,8 @@ npm run typecheck   # library (src/) and extension + tests
 npm test            # vitest, fake Jev over fetch, no network
 npm run build       # dist/ for library consumers
 npm run demo        # live network check (needs TYPESAFE_API_KEY)
+node scripts/last-compaction.mjs [dir]   # what the last compaction of a project decided
+scripts/test-lab.sh [dir]               # throwaway playground to try it by hand
 ```
 
 To run the working tree inside Pi without installing:
@@ -243,6 +246,20 @@ their own `package.json`, and the package manifest names the single entry point 
 
 Architecture notes, the porting decisions and the pitfalls each one avoids are in
 [docs/PLAN.md](docs/PLAN.md) and [docs/architecture.md](docs/architecture.md).
+
+## Testing it by hand
+
+[docs/TESTING.md](docs/TESTING.md) walks through three levels, from `/jev` (is the key
+there?) to a three-minute playground that produces a real compaction on a real project:
+
+```sh
+scripts/test-lab.sh ~/jev-test    # buggy parser + a 50 KB legacy file + a failing test
+cd ~/jev-test && pi -a            # then paste the prompt from TESTING.md and /compact
+node scripts/last-compaction.mjs ~/jev-test   # per-call decisions and probabilities
+```
+
+Expected on that playground: about 97% smaller, three of four tool calls dropped, one Jev
+request, ~600 ms, and the model still able to quote its first instruction word for word.
 
 ## Origin, scope and limitations
 

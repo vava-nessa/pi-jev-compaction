@@ -56,6 +56,15 @@ First release. Verbatim, Jev-guided context compaction for Pi, ported from
   point. Before that, installing the package made Pi reject `config.ts` and
   `pi-messages.ts` with "does not export a valid factory function".
 
+## Testing
+
+- `scripts/test-lab.sh` builds a throwaway playground (a 50 KB legacy file, a real bug, a
+  failing test) so the extension can be exercised by hand in three minutes.
+- `scripts/last-compaction.mjs` prints the persisted `details.jev` of a project: per-call
+  decisions with both probabilities, sizes, state stage, requests and latency.
+- `docs/TESTING.md` documents three levels of manual testing, including the refusals
+  (mid-turn compaction, a session smaller than the kept window, a broken key).
+
 ## Verified
 
 - `src/` is unchanged: the upstream engine suite passes with only the import path edited.
